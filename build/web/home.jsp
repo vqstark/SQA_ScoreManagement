@@ -49,7 +49,7 @@
                 </div>
                 <div id="wrapp-right-header">
                     <span style="color:white; font-weight: bold; margin-right: 20px; font-style: italic">Chào bạn ${userLogined.fullName} (${userLogined.username})</span>
-                    <a href="<%=request.getContextPath()%>/auth" style="color:white; text-decoration: none; font-weight: bold; margin-right: 20px">Thay đổi mật khẩu</a>
+                    <a href="<%=request.getContextPath()%>/auth/change_password" style="color:white; text-decoration: none; font-weight: bold; margin-right: 20px">Thay đổi mật khẩu</a>
                     <a href="<%=request.getContextPath()%>/auth/logout" style="color:white; text-decoration: none; font-weight: bold">Đăng xuất</a>
                 </div>
             </div>
@@ -59,4 +59,11 @@
             <button>Xem điểm</button>
         </form>-->
     </body>
+    <script>
+        var message = '<%= (String)request.getAttribute("alert_message") %>';
+        
+        if(message !== 'null'){
+            alert(message);
+        }
+    </script>
 </html>

@@ -42,6 +42,12 @@ public class AuthServlet extends HttpServlet {
             case "/login":
                 login(request, response);
                 break;
+            case "/change_password":
+                changePasswordUI(request, response);
+                break;
+            case "/do_change":
+                changePassword(request, response);
+                break;
             case "/logout":
                 logout(request, response);
                 break;
@@ -73,7 +79,6 @@ public class AuthServlet extends HttpServlet {
         Student userLogined = studentDAO.login(username, password);
         if(userLogined!=null){
             request.getSession().setAttribute("userLogined", userLogined);
-//            request.getSession().setMaxInactiveInterval(5 * 60); 
             request.getRequestDispatcher("/home.jsp").forward(request, response);
         }else{
             request.getRequestDispatcher("/index.jsp").forward(request, response);
@@ -83,5 +88,47 @@ public class AuthServlet extends HttpServlet {
     private void logout(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
         request.getSession().setAttribute("userLogined", null);
         request.getRequestDispatcher("/index.jsp").forward(request, response);
+    }
+    
+    private void changePasswordUI(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+        Student userLogined = (Student)request.getSession().getAttribute("userLogined");
+        if(userLogined!=null){
+            request.getRequestDispatcher("/change_password.jsp").forward(request, response);
+        }else{
+            request.getRequestDispatcher("/index.jsp").forward(request, response);
+        }
+    }
+    
+    private void changePassword(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+        String url="/index.jsp";
+        Student userLogined = (Student)request.getSession().getAttribute("userLogined");
+        if(userLogined!=null){
+            String message =null;
+            String alert_message=null;
+            String old_password = request.getParameter("old_password");
+            String new_password = request.getParameter("new_password");
+            String rnew_password = request.getParameter("rnew_password");
+            if(studentDAO.login(userLogined.getUsername(), old_password)!=null){
+                if(new_password.equals(rnew_password)){
+                    int row = studentDAO.changePassword(userLogined.getUsername(), new_password);
+                    if(row>0){
+                        alert_message = "Thay đổi mật khẩu thành công";
+                    }else{
+                        alert_message = "Thay đổi mật khẩu thất bại";
+                    }
+                    request.setAttribute("alert_message", alert_message);
+                    url="/home.jsp";
+                }else{
+                    message = "Mật khẩu mới không khớp nhau";
+                    request.setAttribute("message", message);
+                    url="/change_password.jsp";
+                }
+            }else{
+                message = "Mật khẩu cũ không chính xác";
+                request.setAttribute("message", message);
+                url="/change_password.jsp";
+            }
+        }
+        request.getRequestDispatcher(url).forward(request, response);
     }
 }

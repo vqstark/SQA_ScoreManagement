@@ -1,48 +1,22 @@
 <%-- 
-    Document   : index
-    Created on : Mar 15, 2023, 4:54:36 PM
-    Author     : Admin
+    Document   : change_password
+    Created on : Mar 25, 2023, 11:32:16 AM
+    Author     : ThinkPad
 --%>
-<%@page import="model.Student"%>
-<%
-Student user = (Student) session.getAttribute("userLogined");
-if (user != null) {
-    response.sendRedirect(request.getContextPath() + "/auth");
-}
-%>
+
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<jsp:include page="home.jsp"/>
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Hệ thống quản lí điểm PTIT</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Đổi mật khẩu</title>
         <style>
 /*            @use postcss-preset-env {
                 stage: 0;
               }*/
 
               /* ---------- GENERAL ---------- */
-              * {
-                box-sizing: inherit;
-              }
-
-              html {
-                box-sizing: border-box;
-              }
-
-              body {
-                background-color: #c0c0c0;
-                font-family: 'Varela Round', sans-serif;
-                line-height: 1.5;
-                margin: 0;
-                min-block-size: 100vh;
-                padding: 5vmin;
-              }
-
-              h2 {
-                font-size: 1.75rem;
-              }
 
               input {
                 background-image: none;
@@ -93,6 +67,7 @@ if (user != null) {
               /* ---------- LOGIN ---------- */
               .login {
                 width: 500px;
+                margin: 0px auto;
               }
 
               .login__header {
@@ -143,28 +118,28 @@ if (user != null) {
               }
         </style>
     </head>
-
-    <body class="align">
+    <body>
         <div class="login">
-          <header class="login__header">
-            <h2><svg class="icon">
-                <use xlink:href="#icon-lock" />
-              </svg>Hệ thống quản lí điểm PTIT</h2>
-          </header>
 
-          <form action="<%=request.getContextPath()%>/auth/login" class="login__form" method="POST">
+          <form action="<%=request.getContextPath()%>/auth/do_change" class="login__form" method="POST">
+            <div class="notify" style="display:none"></div>
             <div>
-              <label for="email">Tên đăng nhập</label>
-              <input type="text" id="email" name="username" placeholder="" required>
+              <label for="old_password">Mật khẩu cũ</label>
+              <input type="password" id="old_password" name="old_password" placeholder="" onclick="deleteNotify()" required>
             </div>
 
             <div>
-              <label for="password">Mật khẩu</label>
-              <input type="password" id="password" name="password" placeholder="" required>
+              <label for="new_password">Mật khẩu mới</label>
+              <input type="password" id="new_password" name="new_password" placeholder="" onclick="deleteNotify()" required>
+            </div>
+            
+            <div>
+              <label for="rnew_password">Xác nhận mật khẩu mới</label>
+              <input type="password" id="rnew_password" name="rnew_password" placeholder="" onclick="deleteNotify()" required>
             </div>
 
             <div>
-              <input class="button" type="submit" value="Đăng nhập">
+              <input class="button" type="submit" value="Đổi mật khẩu">
             </div>
 
           </form>
@@ -177,4 +152,27 @@ if (user != null) {
           </symbol>
         </svg>
     </body>
+    <script>
+        var message = '<%= (String)request.getAttribute("message") %>';
+        
+        var notifyElements = document.getElementsByClassName("notify");
+        
+        if (message === 'null') {
+            for (var i = 0; i < notifyElements.length; i++) {
+                notifyElements[i].style.display = 'none';
+            }
+        } else {
+            for (var i = 0; i < notifyElements.length; i++) {
+                notifyElements[i].style.display = 'block';
+                notifyElements[i].style.color = 'red';
+                notifyElements[i].innerHTML = message;
+            }
+        }
+        
+        function deleteNotify() {
+            for (var i = 0; i < notifyElements.length; i++) {
+                notifyElements[i].style.display = 'none';
+            }
+         }
+    </script>
 </html>

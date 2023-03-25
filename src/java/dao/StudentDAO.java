@@ -20,8 +20,9 @@ public class StudentDAO {
     private String jdbcUsername = "root";
     private String jdbcPassword = "1211";
     
-//    private static final String SELECT_STUDENT_BY_USERNAME = "select * from student where username =?";
     private static final String QUERY_LOGIN = "select id,password,full_name,clas from student where username =?";
+    
+    private static final String CHANGE_PASSWORD = "UPDATE student SET password = ? WHERE username = ?";
     
     public StudentDAO() {
     }
@@ -63,6 +64,22 @@ public class StudentDAO {
             printSQLException(e);
         }
         return stu;
+    }
+    
+    public int changePassword(String username, String newPassword){
+        int rowsUpdated = -1;
+        try (Connection connection = getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(CHANGE_PASSWORD);) {
+            preparedStatement.setString(2, username);
+            preparedStatement.setString(1, newPassword);
+            System.out.println(preparedStatement);
+            rowsUpdated = preparedStatement.executeUpdate();
+            preparedStatement.close();
+            connection.close();
+        } catch (SQLException e) {
+            printSQLException(e);
+        }
+        return rowsUpdated;
     }
     
     private void printSQLException(SQLException ex) {

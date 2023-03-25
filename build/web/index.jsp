@@ -143,16 +143,7 @@ if (user != null) {
               }
         </style>
     </head>
-<!--    <body>
-        <h1>Hệ thống quản lí điểm PTIT</h1>
-        <form action="<%=request.getContextPath()%>/auth/login" method="post">
-            <label for="username">Tên đăng nhập</label>
-            <input type="text" id="username" name="username" required/><br>
-            <label for="password">Mật khẩu</label>
-            <input type="password" id="password" name="password" required/><br>
-            <button>Login</button>
-        </form>
-    </body>-->
+
     <body class="align">
         <div class="login">
           <header class="login__header">
