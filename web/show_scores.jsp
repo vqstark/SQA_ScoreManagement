@@ -18,6 +18,9 @@
                 background-color: #e5e5e5;
             }
             thead {
+                position: sticky;
+                top: 0;
+                z-index: 1;
                 background-color: #2D8ECE;
                 color: white;
             }
@@ -117,11 +120,11 @@
                         </tr>
                         <tr>
                             <td style="text-align: left;">GPA</td>
-                            <td style="text-align: left;">0</td>
+                            <td style="text-align: left;font-weight: bold">${utils[0]}</td>
                         </tr>
                         <tr>
                             <td style="text-align: left;">Tổng số tín chỉ tích lũy</td>
-                            <td style="text-align: left;">0</td>
+                            <td style="text-align: left;font-weight: bold">${utils[1]}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -191,7 +194,7 @@
             </div>
                         
             <div style="margin: 50px auto; display: flex; justify-content: space-around">
-                <form>
+                <form action="out" method="get">
                     <button>IN ĐIỂM THI</button>
                 </form>
             </div>

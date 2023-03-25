@@ -29,11 +29,24 @@ public class Subject {
         this.bt_percent = bt_percent;
         this.thi_percent = thi_percent;
     }
+    
+    public Subject(String id, double tc, double cc_percent, double kt_percent, double th_percent, double bt_percent, double thi_percent) {
+        this.id = id;
+        this.tc = tc;
+        this.cc_percent = cc_percent;
+        this.kt_percent = kt_percent;
+        this.th_percent = th_percent;
+        this.bt_percent = bt_percent;
+        this.thi_percent = thi_percent;
+    }
 
     public Subject() {
     }
     
-    
+    public Subject(String id, double tc) {
+        this.id = id;
+        this.tc = tc;
+    }
 
     public double getCc_percent() {
         return cc_percent;

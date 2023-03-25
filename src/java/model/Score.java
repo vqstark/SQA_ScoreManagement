@@ -47,6 +47,15 @@ public class Score {
         this.thi = thi;
     }
     
+    public Score(Subject subject, double cc, double kt, double th, double bt, double thi) {
+        this.subject = subject;
+        this.cc = cc;
+        this.kt = kt;
+        this.th = th;
+        this.bt = bt;
+        this.thi = thi;
+    }
+    
     public Score(double cc, double kt, double th, double bt, double thi) {
         this.cc = cc;
         this.kt = kt;

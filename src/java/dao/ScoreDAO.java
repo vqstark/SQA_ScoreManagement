@@ -33,6 +33,12 @@ public class ScoreDAO {
             "join registed_subject on score.registedSubject_id = registed_subject.id "+
             "where registedSubject_id in (select id from registed_subject where student_id=? and semester_id=?);";
     
+    private static final String GET_ALL_SCORES =
+            "select subject_id, tc, cc_percent, kt_percent, th_percent, bt_percent, thi_percent, cc, kt, th, bt, thi from registed_subject " +
+            "join score on score.registedSubject_id = registed_subject.id " +
+            "join subject on subject.id = registed_subject.subject_id " +
+            "where student_id = ?";
+    
     private static final String GET_SEMESTER_BY_ID =
             "select name from semester where id = ?";
     
@@ -251,6 +257,37 @@ public class ScoreDAO {
             }
         }
         return semesters_avg_scores;
+    }
+    
+    public List<Score> getAllScores(int student_id){
+        List<Score> scores = new ArrayList<>();
+        try (Connection connection = getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(GET_ALL_SCORES);) {
+            preparedStatement.setInt(1, student_id);
+            System.out.println(preparedStatement);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                String subject_id = rs.getString("subject_id");
+                double tc = rs.getDouble("tc");
+                double cc_percent = rs.getDouble("cc_percent");
+                double kt_percent = rs.getDouble("kt_percent");
+                double th_percent = rs.getDouble("th_percent");
+                double bt_percent = rs.getDouble("bt_percent");
+                double thi_percent = rs.getDouble("thi_percent");
+                
+                Subject s = new Subject(subject_id, tc, cc_percent, kt_percent, th_percent, bt_percent, thi_percent);
+                double cc = rs.getDouble("cc");
+                double kt = rs.getDouble("kt");
+                double th = rs.getDouble("th");
+                double bt = rs.getDouble("bt");
+                double thi = rs.getDouble("thi");
+                Score c = new Score(s, cc, kt, th, bt, thi);
+                scores.add(c);
+            }
+        } catch (SQLException e) {
+            printSQLException(e);
+        }
+        return scores;
     }
     
     private void printSQLException(SQLException ex) {

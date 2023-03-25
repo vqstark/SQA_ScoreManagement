@@ -18,9 +18,9 @@ if (user != null) {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <style>
-            @use postcss-preset-env {
+/*            @use postcss-preset-env {
                 stage: 0;
-              }
+              }*/
 
               /* ---------- GENERAL ---------- */
               * {
