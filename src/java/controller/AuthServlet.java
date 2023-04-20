@@ -78,9 +78,15 @@ public class AuthServlet extends HttpServlet {
         String password = request.getParameter("password");
         Student userLogined = studentDAO.login(username, password);
         if(userLogined!=null){
-            request.getSession().setAttribute("userLogined", userLogined);
-            request.getRequestDispatcher("/home.jsp").forward(request, response);
+            if(userLogined.getUsername()!=null){
+                request.getSession().setAttribute("userLogined", userLogined);
+                request.getRequestDispatcher("/home.jsp").forward(request, response);
+            }else{
+                request.setAttribute("message", "Mật khẩu không chính xác");
+                request.getRequestDispatcher("/index.jsp").forward(request, response);
+            }
         }else{
+            request.setAttribute("message", "Tài khoản này không tồn tại");
             request.getRequestDispatcher("/index.jsp").forward(request, response);
         }
     }

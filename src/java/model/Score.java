@@ -138,6 +138,13 @@ public class Score {
     
     public double getTK(){
         DecimalFormat df = new DecimalFormat("0.0");
+        if(cc==0 && subject.getCc_percent()!=0.0
+            || kt==0 && subject.getKt_percent()!=0.0
+            || th==0 && subject.getTh_percent()!=0.0
+            || bt==0 && subject.getBt_percent()!=0.0
+            || thi==0 && subject.getThi_percent()!=0.0){
+            return Double.parseDouble(df.format(0.0));
+        }
         double tk =subject.getCc_percent()*cc/100
                 +subject.getKt_percent()*kt/100
                 +subject.getTh_percent()*th/100

@@ -5,11 +5,13 @@
 package controller;
 
 import dao.ScoreDAO;
+import dao.SubjectDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javafx.util.Pair;
@@ -30,11 +32,14 @@ import model.Subject;
 @WebServlet(name = "ScoreServlet", urlPatterns = {"/score"})
 public class ScoreServlet extends HttpServlet {
     private ScoreDAO scoreDAO;
+    private SubjectDAO subjectDAO;
     
     public static Map<String, List<Score>> SEMESTER_SCORES = null;
     
+    @Override
     public void init() {
         scoreDAO = new ScoreDAO();
+        subjectDAO = new SubjectDAO();
     }
     
     @Override
@@ -46,12 +51,12 @@ public class ScoreServlet extends HttpServlet {
         if(loginedUser!=null){
             System.out.println("=====> user ID: "+loginedUser.getId());
 
-            Map<String, List<Score>> semesters_scores = scoreDAO.getScoresForAllSubjects(loginedUser.getId());
+            LinkedHashMap<String, List<Score>> semesters_scores = scoreDAO.getScoresForAllSubjects(loginedUser.getId());
             Map<String, Double> semesters_avg_scores = scoreDAO.calcAvgScorePerSemester(semesters_scores);
             List<Double> gpa = calc_gpa(loginedUser.getId());
             
             SEMESTER_SCORES = semesters_scores;
-
+            
             request.setAttribute("semesters_avg_scores", semesters_avg_scores);
             request.setAttribute("semesters_scores", semesters_scores);
             request.setAttribute("utils", gpa);
@@ -71,7 +76,8 @@ public class ScoreServlet extends HttpServlet {
         if(loginedUser!=null){
             String reqSemester = request.getParameter("semester");
 
-            Map<String, List<Score>> semesters_scores = scoreDAO.getScoresForAllSubjects(loginedUser.getId(), reqSemester);
+            LinkedHashMap<String, List<Score>> semesters_scores = 
+                    scoreDAO.getScoresForAllSubjectsByGivenSemesName(loginedUser.getId(), reqSemester);
             Map<String, Double> semesters_avg_scores = scoreDAO.calcAvgScorePerSemester(semesters_scores);
             List<Double> gpa = calc_gpa(loginedUser.getId());
             
@@ -91,16 +97,17 @@ public class ScoreServlet extends HttpServlet {
     private List<Double> calc_gpa(int student_id){
         List<Score> scores = scoreDAO.getAllScores(student_id);
         
-        Map<Subject, Double> filter = new HashMap<Subject, Double>();
+        Map<String, Double> filter = new HashMap<String, Double>();
         for(Score s:scores){
             double cur_score = s.getTK();
+            String cur_sub_id = s.getSubject().getId();
             try{
-                double his_score = filter.get(s.getSubject());
+                double his_score = filter.get(cur_sub_id);
                 if(cur_score > his_score){
-                    filter.put(s.getSubject(), cur_score);
+                    filter.put(cur_sub_id, cur_score);
                 }
             }catch(Exception e){
-                filter.put(s.getSubject(), cur_score);
+                filter.put(cur_sub_id, cur_score);
             }
         }
         
@@ -108,8 +115,9 @@ public class ScoreServlet extends HttpServlet {
         double total_tc = 0;
         double completed_tc = 0;
         
-        for(Map.Entry<Subject,Double> s:filter.entrySet()){
-            Subject sb = s.getKey();
+        for(Map.Entry<String,Double> s:filter.entrySet()){
+            Subject sb = subjectDAO.getSubjectByID(s.getKey());
+            System.out.println("====>" + sb.getId());
             Double score = s.getValue();
             
             double cur_tc = sb.getTc();

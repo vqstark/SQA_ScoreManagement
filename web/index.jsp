@@ -155,13 +155,15 @@ if (user != null) {
           <form action="<%=request.getContextPath()%>/auth/login" class="login__form" method="POST">
             <div>
               <label for="email">Tên đăng nhập</label>
-              <input type="text" id="email" name="username" placeholder="" required>
+              <input type="text" id="email" name="username" placeholder="" onclick="deleteNotify()" required>
             </div>
 
             <div>
               <label for="password">Mật khẩu</label>
-              <input type="password" id="password" name="password" placeholder="" required>
+              <input type="password" id="password" name="password" placeholder="" onclick="deleteNotify()" required>
             </div>
+            
+            <div id="message">test</div>
 
             <div>
               <input class="button" type="submit" value="Đăng nhập">
@@ -176,5 +178,28 @@ if (user != null) {
             <path d="M400 224h-24v-72C376 68.2 307.8 0 224 0S72 68.2 72 152v72H48c-26.5 0-48 21.5-48 48v192c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V272c0-26.5-21.5-48-48-48zm-104 0H152v-72c0-39.7 32.3-72 72-72s72 32.3 72 72v72z" />
           </symbol>
         </svg>
+        
+        <script>
+            var message = '${message}';
+            var divMessage = document.getElementById("message");
+            var emailInp = document.getElementById("email");
+            var passInp = document.getElementById("password");
+            
+            if(message === 'null'){
+                divMessage.style.display = 'none';
+            }else{
+                divMessage.style.display = 'inline-block';
+                divMessage.style.color = 'red';
+                divMessage.innerHTML = message;
+            }
+            
+            function deleteNotify(){
+                divMessage.style.display = 'none';
+                if(divMessage.style.display !== 'none'){
+                    emailInp.value = '';
+                    passInp.value = '';
+                }
+            }
+        </script>
     </body>
 </html>

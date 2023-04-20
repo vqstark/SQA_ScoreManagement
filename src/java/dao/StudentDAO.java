@@ -15,35 +15,17 @@ import model.Student;
  *
  * @author Admin
  */
-public class StudentDAO {
-    private String jdbcURL = "jdbc:mysql://localhost:3306/sqa_score_management?useUnicode=true&characterEncoding=utf8";
-    private String jdbcUsername = "root";
-    private String jdbcPassword = "1211";
+public class StudentDAO extends DAO{
     
     private static final String QUERY_LOGIN = "select id,password,full_name,clas from student where username =?";
     
     private static final String CHANGE_PASSWORD = "UPDATE student SET password = ? WHERE username = ?";
     
     public StudentDAO() {
-    }
-    
-    protected Connection getConnection() {
-        Connection connection = null;
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            connection = DriverManager.getConnection(jdbcURL, jdbcUsername, jdbcPassword);
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return connection;
+        super();
     }
     
     public Student login(String username, String userPassword) {
-        Student stu = null;
         try (Connection connection = getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(QUERY_LOGIN);) {
             preparedStatement.setString(1, username);
@@ -57,13 +39,13 @@ public class StudentDAO {
                 if(password.equals(userPassword)){
                     return new Student(user_id, username, fullName, clas);
                 }else{
-                    return null;
+                    return new Student();
                 }
             }
         } catch (SQLException e) {
             printSQLException(e);
         }
-        return stu;
+        return null;
     }
     
     public int changePassword(String username, String newPassword){

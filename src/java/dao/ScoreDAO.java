@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import model.Score;
@@ -23,11 +24,8 @@ import model.Subject;
  *
  * @author Admin
  */
-public class ScoreDAO {
-    private String jdbcURL = "jdbc:mysql://localhost:3306/sqa_score_management?useUnicode=true&characterEncoding=utf8";
-    private String jdbcUsername = "root";
-    private String jdbcPassword = "1211";
-    
+public class ScoreDAO extends DAO{
+ 
     private static final String GET_ALL_SCORES_BY_STUDENT_ID =
             "select score.*, registed_subject.subject_id from score " +
             "join registed_subject on score.registedSubject_id = registed_subject.id "+
@@ -46,7 +44,7 @@ public class ScoreDAO {
             "select * from subject where id = ?";
     
     private static final String GET_ALL_REGISTED_SEMESTER_BY_STUDENT_ID = 
-            "select distinct semester_id from registed_subject where student_id = ?";
+            "select distinct semester_id from registed_subject where student_id = ? order by semester_id asc";
     
     private static final String GET_SEMESTER_ID_BY_GIVEN_NAME_VALUE = 
             "select distinct semester_id from registed_subject "+
@@ -55,22 +53,9 @@ public class ScoreDAO {
     
     
     public ScoreDAO() {
+        super();
     }
-    
-    protected Connection getConnection() {
-        Connection connection = null;
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            connection = DriverManager.getConnection(jdbcURL, jdbcUsername, jdbcPassword);
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return connection;
-    }
+
     
     public List<Integer> getRegistedSemesterByStudentID(int student_id){
         List<Integer> semester_id_list = new ArrayList<>();
@@ -106,7 +91,6 @@ public class ScoreDAO {
     }
     
     private List<Integer> getSemesterIdByGivenKeyName(int studentId, String key_name) throws UnsupportedEncodingException{
-        String s = "'th'";
         List<Integer> semester_ids = new ArrayList<>();
         try (Connection connection = getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(GET_SEMESTER_ID_BY_GIVEN_NAME_VALUE);) {
@@ -149,11 +133,11 @@ public class ScoreDAO {
     }
     
 
-    public Map<String, List<Score>> getScoresForAllSubjects(int student_id){
+    public LinkedHashMap<String, List<Score>> getScoresForAllSubjects(int student_id){
         
         List<Integer> semester_id_list = getRegistedSemesterByStudentID(student_id);
         
-        Map<String, List<Score>> semesters_scores = new HashMap<String, List<Score>>();
+        LinkedHashMap<String, List<Score>> semesters_scores = new LinkedHashMap<String, List<Score>>();
         
         for(int semester_id: semester_id_list){
             List<Score> scores = new ArrayList<>();
@@ -183,10 +167,10 @@ public class ScoreDAO {
         return semesters_scores;
     }
     
-    public Map<String, List<Score>> getScoresForAllSubjects(int student_id, String key_name){
+    public LinkedHashMap<String, List<Score>> getScoresForAllSubjectsByGivenSemesName(int student_id, String key_name){
         
-        List<Integer> semester_id_list = new ArrayList<>();
-        Map<String, List<Score>> semesters_scores = new HashMap<String, List<Score>>();
+        List<Integer> semester_id_list = new ArrayList<Integer>();
+        LinkedHashMap<String, List<Score>> semesters_scores = new LinkedHashMap<String, List<Score>>();
         try{
             semester_id_list = getSemesterIdByGivenKeyName(student_id, key_name);
         }catch(UnsupportedEncodingException e){
@@ -229,7 +213,7 @@ public class ScoreDAO {
             List<Score> scores = entry.getValue();
             double avg_score = 0;
             int total_tc = 0;
-            if(scores.size()>0){
+            if(!scores.isEmpty()){
                 for(Score c:scores){
                     double cur_tc = c.getSubject().getTc();
                     String tkc = c.getTKC();

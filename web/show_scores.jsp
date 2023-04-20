@@ -67,7 +67,6 @@
                 display: flex;
                 justify-content: space-around;
                 margin-top: 100px;
-                margin-bottom: 100px;
             }
             .row_score td {
                 text-align: center;
@@ -136,6 +135,9 @@
                     <button>Xem điểm</button>
                 </form>
             </div>
+            <div style="color: #2D8ECE; display: flex; justify-content: space-around; margin-top: 10px; margin-bottom: 100px;">
+                *Vui lòng tìm kiếm theo đúng định dạng "Học kì 1"; "Năm học 2019-2020"; "Học kì 1 - Năm học 2019-2020"
+            </div>
             <div id="student-scores">
                 <table class="table table-bordered">
                     <thead>
@@ -143,11 +145,13 @@
                             <th>Mã Môn</th>
                             <th>Tên Môn</th>
                             <th>TC</th>
+                            <th></th>
                             <th>%CC</th>
                             <th>%KT</th>
                             <th>%TH</th>
                             <th>%BT</th>
                             <th>%Thi</th>
+                            <th></th>
                             <th>Điểm CC</th>
                             <th>Điểm KT</th>
                             <th>Điểm TH</th>
@@ -162,18 +166,20 @@
                         <!--   for (Todo todo: todos) {  -->
                         <c:forEach var="outerEntry" items="${semesters_scores}">
                             <tr class="row-semester">
-                                <td colspan="16" style="font-size: 14px">${outerEntry.key}</td>
+                                <td colspan="18" style="font-size: 14px">${outerEntry.key}</td>
                             </tr>
                             <c:forEach var="innerItem" items="${outerEntry.value}">
                                <tr class="row_score">
                                     <td>${innerItem.subject.id}</td>
                                     <td style="text-align:left">${innerItem.subject.name}</td>
                                     <td>${innerItem.subject.tc}</td>
+                                    <td></td>
                                     <td>${innerItem.subject.cc_percent}</td>
                                     <td>${innerItem.subject.kt_percent}</td>
                                     <td>${innerItem.subject.th_percent}</td>
                                     <td>${innerItem.subject.bt_percent}</td>
                                     <td>${innerItem.subject.thi_percent}</td>
+                                    <td></td>
                                     <td>${innerItem.cc}</td>
                                     <td>${innerItem.kt}</td>
                                     <td>${innerItem.th}</td>
@@ -185,7 +191,7 @@
                                </tr>
                             </c:forEach>
                             <tr>
-                                <td style="font-weight: bold;font-size: 13px;font-style: italic" colspan="16">Điểm trung bình học kì: ${semesters_avg_scores[outerEntry.key]}</td>
+                                <td style="font-weight: bold;font-size: 13px;font-style: italic" colspan="18">Điểm trung bình học kì: ${semesters_avg_scores[outerEntry.key]}</td>
                             </tr>
                          </c:forEach>
                         <!-- } -->
@@ -203,7 +209,7 @@
             </div>
         </div>
         <script>
-            var c = ${searchedKey};
+            var c = '${searchedKey}';
             var divSearch = document.getElementById("search");
             if(c !== null){
                 divSearch.value = c;
